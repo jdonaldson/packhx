@@ -79,8 +79,8 @@ overhead.  Consider using the IntArray iterator method instead.
 
 # Acknowledgements
 
-1) I used some markdown table and examples from [Gregory Paskoz's PackedArray library][gpaskoz].
-2) I learned about some basic performance characteristics from [Daniel Lemire's
+* I used some markdown table and examples from [Gregory Paskoz's PackedArray library][gpaskoz].
+* I learned about some basic performance characteristics from [Daniel Lemire's
 recent blog post on the
 subject][lemire].
 
