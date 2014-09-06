@@ -2,14 +2,14 @@ package packhx;
 using packhx.PackedTools;
 
 /**
-  IntArray is a compressed array type that allows the efficient construction of 
+  IntArray is a compressed array type that allows the efficient construction of
   an array containing Integer numbers smaller than the conventional 32 bit limit.
   For instance, if a developer only needed to use 8 bits to store the nubmers
   in a given case, IntArray could fit around 4 numbers per 32 bit array location.
 
-  IntArray provides normal array access via overloaded @:arrayAccess methods, 
-  so, it can behave more or less like a normal array.  However, rather than 
-  having an instance length field, it has an instance length method. 
+  IntArray provides normal array access via overloaded @:arrayAccess methods,
+  so, it can behave more or less like a normal array.  However, rather than
+  having an instance length field, it has an instance length method.
  **/
 abstract IntArray(Array<Int>) {
     static inline var SEGMENT = 0.03125; // 1/32
@@ -28,7 +28,7 @@ abstract IntArray(Array<Int>) {
         return this[0] & 31;
     }
     /**
-      This function returns the final cell offset, which contains the position of 
+      This function returns the final cell offset, which contains the position of
       the final value in the last array position.
      **/
     public function final_offset() : Int {
@@ -44,16 +44,16 @@ abstract IntArray(Array<Int>) {
         var init_value = this[index].maskExtract( start_offset, size);
         if (start_offset + size > 32){
             var overlap = start_offset + size - 32;
-            var addmask = this[index+1].maskExtract(0, start_offset + size  - 32) << size -overlap; 
+            var addmask = this[index+1].maskExtract(0, start_offset + size  - 32) << size -overlap;
             return init_value | this[index+1].maskExtract( 0, start_offset + size  - 32) << size -overlap;
         } else {
-            return init_value; 
+            return init_value;
         }
-    } 
+    }
 
     @:arrayAccess public inline function arrayWrite(key : Int, value : Int): Int {
-        var size = cellSize(); 
-        var start = (key * size) + 10; 
+        var size = cellSize();
+        var start = (key * size) + 10;
         var index = Std.int(start * SEGMENT);
         var start_offset = start % 32;
         if (this[index] == null) this[index] = 0;
@@ -77,9 +77,49 @@ abstract IntArray(Array<Int>) {
        return [for (i in 0...length()) arrayAccess(i)];
     }
 
+    /**
+      The concat method is a little different than the standard array concat.
+      It will set the bit size of the returned IntArray based on the maximum
+      of the two concatted bit size lengths.
+     **/
+    public function concat(a : IntArray): IntArray {
+       var l = length();
+       var al = a.length();
+       var ret = new packhx.IntArray(l > al ? l : al);
+       for (v in 0...length()) ret.push(arrayAccess(v));
+       for (v in 0...a.length()) ret.push(a.arrayAccess(v));
+       return ret;
+    }
+
+    public function push(val:Int){
+       arrayWrite(length(),val);
+    }
+
+    public function pop():Int{
+       var ret = arrayAccess(length()-1);
+       if (final_offset() > 0){
+          this[0] = this[0].maskSet( I32L, I32L, final_offset() - 1);
+       } else {
+          if (this.length > 1) this.pop();
+          else return null;
+          this[0] = this[0].maskSet( I32L, I32L, Std.int(I32L/cellSize())-1);
+       }
+       return ret;
+    }
+
+    public function reverse(){
+       var left= 0;
+       var right=length() -1;
+       while(left < right) {
+          var temporary = arrayAccess(left);
+          arrayWrite(left, arrayAccess(right));
+          arrayWrite(right, temporary);
+          left++; right--;
+       }
+    }
 
     /**
-      Calculates the length given the current cell size, and the final cell 
+      Calculates the length given the current cell size, and the final cell
       offset.
      **/
     public function length(){

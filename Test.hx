@@ -26,6 +26,7 @@ class Test {
         trace(k);
         trace(l.length);
         trace(k.dump().length);
+        k.concat(k);
         arr(k);
         
     }
