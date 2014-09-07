@@ -52,12 +52,14 @@ trace(parr[3]);
 ```
 
 If you're curious, you can access the raw underlying array value : 
+
 ```haxe
 trace(parr.dump());
 //[44,65536]
 ```
 
 The packed array value is often much smaller than the equivalent native array:
+
 ```haxe
    var k = new IntArray(12); // 12 bit maximum number
    var l = new Array<Int>();
@@ -65,6 +67,7 @@ The packed array value is often much smaller than the equivalent native array:
    trace(l.length); // size is 1000
    trace(k.dump().length); // size is 376... ***>60% reduction!***
 ```
+
 The total array size savings will be roughly equivalent to the ratio of your bit
 size argument to 32 bits, minus a small amount of space used for packhx internals.
 
@@ -80,7 +83,15 @@ overhead.  Consider using the IntArray iterator method instead.)
    }
    f(parr); // call an array argument function with an IntArray
 ```
+# Caveats
 
+The IntArray type allows for aribtrary array access.  However, unlike normal
+array access an unset cell will return 0 instead of null.
+
+
+# Future work
+1. Negative integers
+2. Full array interface support
 
 # Acknowledgements
 
