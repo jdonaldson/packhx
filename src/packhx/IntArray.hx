@@ -14,6 +14,7 @@ using packhx.PackedTools;
 abstract IntArray(Array<Int>) {
     static inline var SEGMENT = 0.03125; // 1/32
     static inline var I32L = 5; // It takes 5 bits to express the number 32
+    static inline var FOO = SEGMENT/2;
     /**
       Constructs a new packed IntArray with the given cell size
      **/
@@ -31,7 +32,7 @@ abstract IntArray(Array<Int>) {
       This function returns the final cell offset, which contains the position of
       the final value in the last array position.
      **/
-    public function final_offset() : Int {
+    public function finalOffset() : Int {
         return this[0].maskExtract(I32L, I32L);
     }
 
@@ -66,8 +67,8 @@ abstract IntArray(Array<Int>) {
             var overlap = start_offset + size - 32;
             this[index + 1] =this[index+1].maskSet( 0, overlap, value >>> size-overlap );
         } else if (index == this.length - 1) {
-            if (final_offset() < start_offset){
-                this[0] = this[0].maskSet( I32L, I32L, final_offset() + 1);
+            if (finalOffset() < start_offset){
+                this[0] = this[0].maskSet( I32L, I32L, finalOffset() + 1);
             }
         }
         return value;
@@ -83,9 +84,9 @@ abstract IntArray(Array<Int>) {
       of the two concatted bit size lengths.
      **/
     public function concat(a : IntArray): IntArray {
-       var l = length();
-       var al = a.length();
-       var ret = new packhx.IntArray(l > al ? l : al);
+       var s = cellSize();
+       var as = a.cellSize();
+       var ret = new packhx.IntArray(s > as ? s : as);
        for (v in 0...length()) ret.push(arrayAccess(v));
        for (v in 0...a.length()) ret.push(a.arrayAccess(v));
        return ret;
@@ -97,14 +98,39 @@ abstract IntArray(Array<Int>) {
 
     public function pop():Int{
        var ret = arrayAccess(length()-1);
-       if (final_offset() > 0){
-          this[0] = this[0].maskSet( I32L, I32L, final_offset() - 1);
+       if (finalOffset() > 0){
+           setFinalOffset(finalOffset() -1);
        } else {
           if (this.length > 1) this.pop();
           else return null;
-          this[0] = this[0].maskSet( I32L, I32L, Std.int(I32L/cellSize())-1);
+          setLength(Std.int(I32L/cellSize())-1);
        }
        return ret;
+    }
+
+    public function setFinalOffset(offset){
+        this[0] = this[0].maskSet( I32L, I32L, offset);
+    }
+
+    public function setLength(length:Int){
+          this[0] = this[0].maskSet( I32L, I32L, length);
+    }
+
+    public function shift():Int{
+        if (length() <=0) return null; 
+        else {
+            var ret = arrayAccess(0);
+            for (i in 1...length()-1){
+                arrayWrite(i, arrayAccess(i+1));
+            }
+            if (finalOffset() > 0){
+                setFinalOffset(finalOffset() -1);
+            } else {
+
+            }
+            return null;
+
+        }
     }
 
     public function reverse(){
@@ -123,10 +149,15 @@ abstract IntArray(Array<Int>) {
       offset.
      **/
     public function length(){
-        return Std.int((this.length-1) * (32 / cellSize())) + final_offset();
+        return Std.int((this.length-1) * (32 / cellSize())) + finalOffset();
     }
     public function toString(){
-       return '[${[for (i in 0...length()) arrayAccess(i)].join(', ')}]';
+       return '[${[for (i in 0...length()) arrayAccess(i)].join(',')}]';
+    }
+    public static function fromArray(arr:Array<Int>, cellSize:Int) : IntArray{
+        var ret = new IntArray(cellSize);
+        for (a in arr) ret.push(a);
+        return ret;
     }
 
     public function iterator(){
