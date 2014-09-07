@@ -54,6 +54,7 @@ trace(parr[3]);
 If you're curious, you can access the raw underlying array value : 
 ```haxe
 trace(parr.dump());
+//[44,65536]
 ```
 
 The packed array value is often much smaller than the equivalent native array:
@@ -61,19 +62,23 @@ The packed array value is often much smaller than the equivalent native array:
    var k = new IntArray(12); // 12 bit maximum number
    var l = new Array<Int>();
    for (i in 0...1000){ l[i] = Std.int(Math.random() * 500); k[i] = l[i]; }
-   trace(l.length); // 1000
-   trace(k.dump().length); // 376
+   trace(l.length); // size is 1000
+   trace(k.dump().length); // size is 376... ***>60% reduction!***
 ```
+The total array size savings will be roughly equivalent to the ratio of your bit
+size argument to 32 bits, minus a small amount of space used for packhx internals.
+
+
 
 You can use a packed int array whenever you need a normal int array.  The Haxe
 abstract will convert it for you (note that this will make a copy an incur some
-overhead.  Consider using the IntArray iterator method instead.
+overhead.  Consider using the IntArray iterator method instead.)
 
 ```haxe
    var f = function(iarr : Array<Int>){
-      trace(iarr.length);
+      trace(Std.is(iarr, Array));
    }
-   f(parr);
+   f(parr); // call an array argument function with an IntArray
 ```
 
 

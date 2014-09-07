@@ -6,6 +6,8 @@ class Test {
     public static function test() {
         var k = new IntArray(12);
         var l = new Array<Int>();
+        k[3] = 4;
+        trace(k.dump());
         for (i in 0...1000){
             l[i] = Std.int(Math.random() * 500);
             k[i] = l[i];
@@ -31,6 +33,6 @@ class Test {
         
     }
     public static function arr(arr:Array<Int>){
-       trace(arr.length);
+       trace(Std.is(arr,Array));
     }
 }
