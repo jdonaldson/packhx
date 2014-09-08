@@ -1,6 +1,7 @@
 # Packhx
 
-Packhx is a bit packed array abstract implementation for Haxe.
+Packhx is a bit packed array abstract implementation for Haxe.  It is considered alpha 
+level, use at your own risk!
 
 
 Bit packing is useful in situations where you need an array of integers, but do 
