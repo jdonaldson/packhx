@@ -1,4 +1,5 @@
 # Packhx
+[![Build Status][travis-ci]][travis-ci 2]
 
 Packhx is a bit packed array abstract implementation for Haxe.  It is considered alpha 
 level, use at your own risk!
@@ -101,5 +102,9 @@ array access an unset cell will return 0 instead of null.
 recent blog post on the
 subject][lemire].
 
+
+
 [gpaskoz]: https://github.com/gpakosz/PackedArray
 [lemire]: http://lemire.me/blog/archives/2012/03/06/how-fast-is-bit-packing/
+[travis-ci]: https://travis-ci.org/jdonaldson/packhx.svg?branch=master
+[travis-ci 2]: https://travis-ci.org/jdonaldson/packhx
