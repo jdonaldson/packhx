@@ -13,6 +13,27 @@ class TestPackHx extends haxe.unit.TestCase {
         assertEquals(arr.toString(), iarr.toString());
          
     }
+    public function testGauntlet(){
+#if neko
+        for (i in 1...30){ // neko random can't seem to handle n > 29
+#else
+        for (i in 1...32){
+#end
+            var arr = new Array<Int>();
+            var iarr = new IntArray(i);
+            for (j in 0...32){
+                var rnd = Std.int(Math.pow(2,i));
+                try{
+                    arr[j] =Std.random(rnd);
+                } catch(e:Dynamic){
+                    trace(rnd);
+                    trace(i);
+                }
+                iarr[j] = arr[j];
+            }
+            assertEquals(arr.toString(), iarr.toString());
+        }
+    }
     public function testPop(){
         var iarr = new IntArray(8);
         iarr.push(1);
