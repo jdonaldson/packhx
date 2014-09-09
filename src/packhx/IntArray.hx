@@ -14,7 +14,6 @@ using packhx.PackedTools;
 abstract IntArray(Array<Int>) {
     static inline var SEGMENT = 0.03125; // 1/32
     static inline var I32L = 5; // It takes 5 bits to express the number 32
-    static inline var FOO = SEGMENT/2;
     /**
       Constructs a new packed IntArray with the given cell size
      **/
