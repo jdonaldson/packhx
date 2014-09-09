@@ -66,10 +66,13 @@ abstract IntArray(Array<Int>) {
             }
             var overlap = start_offset + size - 32;
             this[index + 1] =this[index+1].maskSet( 0, overlap, value >>> size-overlap );
+        } else if (start_offset + size == 32){
+            this[0] = this[0].maskSet( I32L, I32L, 0);
+            this[index + 1]=0;
         } else if (index == this.length - 1) {
+            // last index in raw array
             this[0] = this[0].maskSet( I32L, I32L, finalOffset() + 1);
-        } else {
-        }
+        }         
         return value;
     }
 
@@ -112,7 +115,7 @@ abstract IntArray(Array<Int>) {
     }
 
     public function shift():Int{
-        if (length() <=0) return null; 
+        if (length() <=0) return null;
         else {
             var ret = arrayAccess(0);
             for (i in 1...length()-1){
@@ -144,8 +147,11 @@ abstract IntArray(Array<Int>) {
       offset.
      **/
     public function length(){
-        return this.length <=1 ? finalOffset() : 
-            Std.int(((this.length-2) *32) /cellSize()) + finalOffset();
+        if (this.length <=2){
+            return finalOffset();
+        } else {
+            return Math.ceil(((this.length-2) * 32) / cellSize()) + finalOffset();
+        }
     }
     public function toString(){
        return '[${[for (i in 0...length()) arrayAccess(i)].join(',')}]';
@@ -160,11 +166,11 @@ abstract IntArray(Array<Int>) {
         var index = 0;
         return {
             hasNext : function(){
-                return index + 1 != length(this);
+                return index + 1 != length();
             },
             next : function(){
                index += 1;
-               return arrayAccess(this, index);
+               return arrayAccess(index);
             }
         }
     }
