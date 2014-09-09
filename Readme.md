@@ -34,6 +34,9 @@ the 32 bit array cell values b{0-2}.  Note that values can overlap.
   </tr>
 </table>
 
+
+
+
 To create packed IntArray, you must specify the maximum bit size you want:
 
 ```haxe
@@ -67,12 +70,13 @@ The packed array value is often much smaller than the equivalent native array:
    var l = new Array<Int>();
    for (i in 0...1000){ l[i] = Std.int(Math.random() * 500); k[i] = l[i]; }
    trace(l.length); // size is 1000
-   trace(k.dump().length); // size is 376... ***>60% reduction!***
+   trace(k.dump().length); // size is 377... ***>60% reduction!***
 ```
 
 The total array size savings will be roughly equivalent to the ratio of your bit
-size argument to 32 bits, minus a small amount of space used for packhx internals.
-
+size argument to 32 bits, minus a small amount of space used for packhx
+internals (packhx reserves the first cell of the array to store bit size and a
+count of how many packed integers are in the last cell.
 
 
 You can use a packed int array whenever you need a normal int array.  The Haxe
