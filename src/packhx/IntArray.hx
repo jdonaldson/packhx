@@ -38,8 +38,8 @@ abstract IntArray(Array<Int>) {
 
     @:arrayAccess public inline function arrayAccess(key : Int): Int {
         var size = cellSize();
-        var start = (key * size) + 10;
-        var index = Std.int(start * SEGMENT);
+        var start = (key * size);
+        var index = Std.int(start * SEGMENT) + 1;
         var start_offset = start % 32;
         if (this[index] == null) return 0;
         var init_value = this[index].maskExtract( start_offset, size);
@@ -54,8 +54,8 @@ abstract IntArray(Array<Int>) {
 
     @:arrayAccess public inline function arrayWrite(key : Int, value : Int): Int {
         var size = cellSize();
-        var start = (key * size) + 10;
-        var index = Std.int(start * SEGMENT);
+        var start = (key * size);
+        var index = Std.int(start * SEGMENT) + 1;
         var start_offset = start % 32;
         if (this[index] == null) this[index] = 0;
         this[index] = this[index].maskSet(start_offset, size, value);
@@ -67,9 +67,8 @@ abstract IntArray(Array<Int>) {
             var overlap = start_offset + size - 32;
             this[index + 1] =this[index+1].maskSet( 0, overlap, value >>> size-overlap );
         } else if (index == this.length - 1) {
-            if (finalOffset() < start_offset){
-                this[0] = this[0].maskSet( I32L, I32L, finalOffset() + 1);
-            }
+            this[0] = this[0].maskSet( I32L, I32L, finalOffset() + 1);
+        } else {
         }
         return value;
     }
@@ -103,17 +102,13 @@ abstract IntArray(Array<Int>) {
        } else {
           if (this.length > 1) this.pop();
           else return null;
-          setLength(Std.int(I32L/cellSize())-1);
+          setFinalOffset(cellSize()-1);
        }
        return ret;
     }
 
     public function setFinalOffset(offset){
         this[0] = this[0].maskSet( I32L, I32L, offset);
-    }
-
-    public function setLength(length:Int){
-          this[0] = this[0].maskSet( I32L, I32L, length);
     }
 
     public function shift():Int{
@@ -149,7 +144,8 @@ abstract IntArray(Array<Int>) {
       offset.
      **/
     public function length(){
-        return Std.int((this.length-1) * (32 / cellSize())) + finalOffset();
+        return this.length <=1 ? finalOffset() : 
+            Std.int(((this.length-2) *32) /cellSize()) + finalOffset();
     }
     public function toString(){
        return '[${[for (i in 0...length()) arrayAccess(i)].join(',')}]';
@@ -164,11 +160,11 @@ abstract IntArray(Array<Int>) {
         var index = 0;
         return {
             hasNext : function(){
-                return index + 1 != length();
+                return index + 1 != length(this);
             },
             next : function(){
                index += 1;
-               return arrayAccess(index);
+               return arrayAccess(this, index);
             }
         }
     }
