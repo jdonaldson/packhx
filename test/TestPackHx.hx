@@ -19,10 +19,12 @@ class TestPackHx extends haxe.unit.TestCase {
         }
     }
     public function testPop(){
-        var iarr = new IntArray(8);
-        iarr.push(1);
-        iarr.pop();
-        assertTrue(iarr.length() == 0);
+        var arr = [1,2,3];
+        var iarr = IntArray.fromArray(arr, 6);
+        var ip  = iarr.pop();
+        var p = arr.pop();
+        assertEquals(arr.toString(), iarr.toString());
+        assertEquals(ip, p);
     }
     public function testIterator(){
         var arr = [1,2,3];
@@ -48,6 +50,14 @@ class TestPackHx extends haxe.unit.TestCase {
         assertEquals(arr.toString(), iarr.toString());
 
     }
+    public function testShift(){
+        var arr = [1,2,3];
+        var iarr = IntArray.fromArray(arr, 6);
+        var is = iarr.shift();
+        var s = arr.shift();
+        assertEquals(arr.toString(), iarr.toString());
+    }
+
     public function testReverse(){
         var arr = [1,2,3];
         var iarr = IntArray.fromArray(arr, 6);

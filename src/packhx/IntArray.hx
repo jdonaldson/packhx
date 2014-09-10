@@ -64,26 +64,24 @@ abstract IntArray(Array<Int>) {
         var start_offset = start % 32;
         if (this[index] == null) this[index] = 0;
         this[index] = this[index].maskSet(start_offset, size, value);
-        if (start_offset + size > 32){
+        if (start_offset + size >= 32){
             if (this[index + 1] == null){
                 this[index + 1] = 0;
                 this[0] = this[0].maskSet( I32L, I32L, 0);
             }
             var overlap = start_offset + size - 32;
-            this[index + 1] =this[index+1].maskSet( 0, overlap, value >>> size-overlap );
-        } else if (start_offset + size == 32){
-            this[0] = this[0].maskSet( I32L, I32L, 0);
-            this[index + 1]=0;
+            if (overlap > 0) {
+                this[index + 1] =this[index+1].maskSet( 0, overlap, value >>> size-overlap );
+            }
         } else if (start_offset >= finalOffset() * cellSize()) {
             // last index in raw array
             this[0] = this[0].maskSet( I32L, I32L, finalOffset() + 1);
-        } else {
-        }
+        } 
         return value;
     }
 
     @:to public function toArray() {
-       return [for (i in 0...length()) arrayAccess(i)];
+       return [for (i in iterator()) i];
     }
 
     /**
@@ -121,20 +119,12 @@ abstract IntArray(Array<Int>) {
     }
 
     public function shift():Int{
-        if (length() <=0) return null;
-        else {
-            var ret = arrayAccess(0);
-            for (i in 1...length()-1){
-                arrayWrite(i, arrayAccess(i+1));
-            }
-            if (finalOffset() > 0){
-                setFinalOffset(finalOffset() -1);
-            } else {
-
-            }
-            return null;
-
+        var ret = arrayAccess(0);
+        for (i in 0...length()-1){
+            arrayWrite(i, arrayAccess(i+1));
         }
+        pop();
+        return ret;
     }
 
     /**
