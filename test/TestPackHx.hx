@@ -24,11 +24,35 @@ class TestPackHx extends haxe.unit.TestCase {
         iarr.pop();
         assertTrue(iarr.length() == 0);
     }
+    public function testIterator(){
+        var arr = [1,2,3];
+        var iarr = IntArray.fromArray(arr, 6);
+        var parr = [];
+        for (i in iarr){
+            parr.push(i);
+        }
+        assertEquals(arr.toString(), parr.toString());
+
+    }
     public function testConcat(){
         var arr = [1,2,3];
-        var iarr1 = IntArray.fromArray(arr, 6); 
-        var iarr2 = IntArray.fromArray(arr, 12); 
+        var iarr1 = IntArray.fromArray(arr, 6);
+        var iarr2 = IntArray.fromArray(arr, 12);
         var iarr3 = iarr1.concat(iarr2);
         assertTrue(iarr3.cellSize() == Std.int(Math.max(iarr1.cellSize(), iarr2.cellSize())));
+    }
+    public function testReset(){
+        var arr = [1,2,3];
+        var iarr = IntArray.fromArray(arr, 6);
+        iarr[0] =iarr[0];
+        assertEquals(arr.toString(), iarr.toString());
+
+    }
+    public function testReverse(){
+        var arr = [1,2,3];
+        var iarr = IntArray.fromArray(arr, 6);
+        arr.reverse();
+        iarr.reverse();
+        assertEquals(arr.toString(), iarr.toString());
     }
 }

@@ -35,6 +35,9 @@ abstract IntArray(Array<Int>) {
         return this[0].maskExtract(I32L, I32L);
     }
 
+    /**
+      The array accessor, which has most of the critical logic.
+     **/
     @:arrayAccess public inline function arrayAccess(key : Int): Int {
         var size = cellSize();
         var start = (key * size);
@@ -51,6 +54,9 @@ abstract IntArray(Array<Int>) {
         }
     }
 
+    /**
+      The array writer, which is the other critical method
+     **/
     @:arrayAccess public inline function arrayWrite(key : Int, value : Int): Int {
         var size = cellSize();
         var start = (key * size);
@@ -68,10 +74,11 @@ abstract IntArray(Array<Int>) {
         } else if (start_offset + size == 32){
             this[0] = this[0].maskSet( I32L, I32L, 0);
             this[index + 1]=0;
-        } else if (index == this.length - 1) {
+        } else if (start_offset >= finalOffset() * cellSize()) {
             // last index in raw array
             this[0] = this[0].maskSet( I32L, I32L, finalOffset() + 1);
-        }         
+        } else {
+        }
         return value;
     }
 
@@ -130,13 +137,16 @@ abstract IntArray(Array<Int>) {
         }
     }
 
+    /**
+      Reverses the packed array in place
+     **/
     public function reverse(){
        var left= 0;
-       var right=length() -1;
+       var right=length()-1;
        while(left < right) {
-          var temporary = arrayAccess(left);
+          var tmp = arrayAccess(left);
           arrayWrite(left, arrayAccess(right));
-          arrayWrite(right, temporary);
+          arrayWrite(right, tmp);
           left++; right--;
        }
     }
@@ -147,14 +157,20 @@ abstract IntArray(Array<Int>) {
      **/
     public function length(){
         if (this.length <=2){
+            // the second cell is the first "data" cell.  If that's it,
+            // then just return the offset of the final packed int.
             return finalOffset();
         } else {
+            // else we need to calculate out how many packed ints per
+            // array cell, and add the final offset to that.
             return Math.ceil(((this.length-2) * 32) / cellSize()) + finalOffset();
         }
     }
+
     public function toString(){
-       return '[${[for (i in 0...length()) arrayAccess(i)].join(',')}]';
+       return '[${[for (i in iterator()) i].join(',')}]';
     }
+
     public static function fromArray(arr:Array<Int>, cellSize:Int) : IntArray{
         var ret = new IntArray(cellSize);
         for (a in arr) ret.push(a);
@@ -165,11 +181,10 @@ abstract IntArray(Array<Int>) {
         var index = 0;
         return {
             hasNext : function(){
-                return index + 1 != length();
+                return index != length();
             },
             next : function(){
-               index += 1;
-               return arrayAccess(index);
+               return arrayAccess(index++);
             }
         }
     }
