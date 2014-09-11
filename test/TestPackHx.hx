@@ -3,13 +3,9 @@ import packhx.PackedTools;
 
 class TestPackHx extends haxe.unit.TestCase {
     public function testGauntlet(){
-#if neko
-        for (i in 1...30){ // neko random can't seem to handle n > 29
-#else
-        for (i in 1...32){
-#end
+        for (i in 1...#if neko 29 #else 31 #end){ // neko random can't seem to handle n > 29
             var arr = new Array<Int>();
-            var iarr = new IntArray(i);
+            var iarr = new IntArray(i+1);
             for (j in 0...32){
                 var rnd = Std.int(Math.pow(2,i));
                 arr[j] =Std.random(rnd);
@@ -18,6 +14,7 @@ class TestPackHx extends haxe.unit.TestCase {
             assertEquals(arr.toString(), iarr.toString());
         }
     }
+
     public function testPop(){
         var arr = [1,2,3];
         var iarr = IntArray.fromArray(arr, 6);
@@ -34,8 +31,8 @@ class TestPackHx extends haxe.unit.TestCase {
             parr.push(i);
         }
         assertEquals(arr.toString(), parr.toString());
-
     }
+
     public function testConcat(){
         var arr = [1,2,3];
         var iarr1 = IntArray.fromArray(arr, 6);
@@ -43,13 +40,14 @@ class TestPackHx extends haxe.unit.TestCase {
         var iarr3 = iarr1.concat(iarr2);
         assertTrue(iarr3.cellSize() == Std.int(Math.max(iarr1.cellSize(), iarr2.cellSize())));
     }
+
     public function testReset(){
         var arr = [1,2,3];
         var iarr = IntArray.fromArray(arr, 6);
         iarr[0] =iarr[0];
         assertEquals(arr.toString(), iarr.toString());
-
     }
+
     public function testShift(){
         var arr = [1,2,3];
         var iarr = IntArray.fromArray(arr, 6);
@@ -65,4 +63,11 @@ class TestPackHx extends haxe.unit.TestCase {
         iarr.reverse();
         assertEquals(arr.toString(), iarr.toString());
     }
+
+    public function testNegative() {
+        var arr = [-1,-2,-3];
+        var iarr = IntArray.fromArray(arr, 6);
+        assertEquals(arr.toString(), iarr.toString());
+    }
+    
 }

@@ -32,7 +32,7 @@ abstract IntArray(Array<Int>) {
       the final value in the last array position.
      **/
     public function finalOffset() : Int {
-        return this[0].maskExtract(I32L, I32L);
+        return this[0].maskExtractSigned(I32L, I32L);
     }
 
     /**
@@ -44,13 +44,12 @@ abstract IntArray(Array<Int>) {
         var index = Std.int(start * SEGMENT) + 1;
         var start_offset = start % 32;
         if (this[index] == null) return 0;
-        var init_value = this[index].maskExtract( start_offset, size);
         if (start_offset + size > 32){
+            var init_value = this[index].maskExtract( start_offset, size);
             var overlap = start_offset + size - 32;
-            var addmask = this[index+1].maskExtract(0, start_offset + size  - 32) << size -overlap;
             return init_value | this[index+1].maskExtract( 0, start_offset + size  - 32) << size -overlap;
         } else {
-            return init_value;
+            return this[index].maskExtractSigned( start_offset, size);
         }
     }
 
