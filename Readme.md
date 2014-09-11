@@ -94,6 +94,8 @@ overhead.  Consider using the IntArray iterator method instead.)
 The IntArray type allows for aribtrary array access.  However, unlike normal
 array access an unset cell will return 0 instead of null.
 
+Packhx supports Haxe 3.1.3 and up.
+
 
 # Future work
 1. <strike>Negative integers</strike>

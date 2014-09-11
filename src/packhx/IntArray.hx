@@ -32,7 +32,7 @@ abstract IntArray(Array<Int>) {
       the final value in the last array position.
      **/
     public function finalOffset() : Int {
-        return this[0].maskExtractSigned(I32L, I32L);
+        return this[0].maskExtract(I32L, I32L);
     }
 
     /**
