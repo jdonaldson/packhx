@@ -3,15 +3,17 @@ import packhx.PackedTools;
 
 class TestPackHx extends haxe.unit.TestCase {
     public function testGauntlet(){
-        for (i in 1...#if neko 29 #else 31 #end){ // neko random can't seem to handle n > 29
-            var arr = new Array<Int>();
-            var iarr = new IntArray(i+1);
-            for (j in 0...32){
-                var rnd = Std.int(Math.pow(2,i));
-                arr[j] =Std.random(rnd);
-                iarr[j] = arr[j];
+        for (sign in [-1, 1]){
+            for (i in 1...#if neko 29 #else 31 #end){ // neko random can't seem to handle n > 29
+                var arr = new Array<Int>();
+                var iarr = new IntArray(i+1);
+                for (j in 0...32){
+                    var rnd = Std.int(Math.pow(2,i));
+                    arr[j] =sign * Std.random(rnd);
+                    iarr[j] = arr[j];
+                }
+                assertEquals(arr.toString(), iarr.toString());
             }
-            assertEquals(arr.toString(), iarr.toString());
         }
     }
 
@@ -63,11 +65,4 @@ class TestPackHx extends haxe.unit.TestCase {
         iarr.reverse();
         assertEquals(arr.toString(), iarr.toString());
     }
-
-    public function testNegative() {
-        var arr = [-1,-2,-3];
-        var iarr = IntArray.fromArray(arr, 6);
-        assertEquals(arr.toString(), iarr.toString());
-    }
-    
 }

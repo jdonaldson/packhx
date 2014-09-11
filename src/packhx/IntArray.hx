@@ -47,7 +47,7 @@ abstract IntArray(Array<Int>) {
         if (start_offset + size > 32){
             var init_value = this[index].maskExtract( start_offset, size);
             var overlap = start_offset + size - 32;
-            return init_value | this[index+1].maskExtract( 0, start_offset + size  - 32) << size -overlap;
+            return init_value | this[index+1].maskExtractSigned( 0, start_offset + size  - 32) << size -overlap;
         } else {
             return this[index].maskExtractSigned( start_offset, size);
         }
