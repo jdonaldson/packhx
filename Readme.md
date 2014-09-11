@@ -96,7 +96,7 @@ array access an unset cell will return 0 instead of null.
 
 
 # Future work
-1. Negative integers
+1. <strike>Negative integers</strike>
 2. Full array interface support
 
 # Acknowledgements
