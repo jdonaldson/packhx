@@ -75,19 +75,27 @@ abstract IntArray(Array<Int>) {
         var index = Std.int(start * SEGMENT) + 1;
         var start_offset = start % 32;
         if (this[index] == null) return 0;
+        var init_value = 
         if (start_offset + size > 32){
             var init_value = this[index].maskExtract( start_offset, size);
             var overlap = start_offset + size - 32;
-            return init_value | this[index+1].maskExtractSigned( 0, start_offset + size  - 32) << size -overlap;
+            init_value | this[index+1].maskExtractSigned( 0, start_offset + size  - 32) << size -overlap;
         } else {
-            return this[index].maskExtractSigned( start_offset, size);
+            this[index].maskExtractSigned( start_offset, size);
         }
+        return init_value & 1 == 1  ?  init_value >> 1 : null;
     }
 
     /**
       The array writer, which is the other critical method
      **/
     @:arrayAccess public inline function arrayWrite(key : Int, value : Int): Int {
+        if (value == null){
+            value = 0;
+        } else {
+            value <<= 1;
+            value |= 1;
+        }
         var size = bitSize;
         var start = (key * size);
         var index = Std.int(start * SEGMENT) + 1;
