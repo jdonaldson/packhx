@@ -199,7 +199,7 @@ abstract IntArray(Array<Int>) {
 	**/
 	public function sort( f : Int -> Int -> Int ) : Void
 	{
-		if (length == 0) return;
+		if (length < 2) return; // 1 or fewer items don't need to be sorted
 		quicksort(0, length - 1, f);
 	}
 
@@ -209,21 +209,21 @@ abstract IntArray(Array<Int>) {
 	 */
 	private function quicksort( lo : Int, hi : Int, f : Int -> Int -> Int ) : Void
 	{
-		var i = lo, j = hi;
+        var i = lo, j = hi;
         var p = arrayAccess((i + j) >> 1);
-		while ( i <= j )
-		{
-			while ( f(arrayAccess(i), p) < 0 ) i++;
-            while ( f(arrayAccess(j), p) > 0 ) j--;
-			if ( i <= j )
-			{
+        while ( i <= j )
+        {
+            while ( f(arrayAccess(i), p) < 0 && i < length-1) i++;
+            while ( f(arrayAccess(j), p) > 0 && j > 1 ) j--;
+            if ( i <= j )
+            {
                 var t = arrayAccess(i);
                 arrayWrite(i++, arrayAccess(j));
                 arrayWrite(j--, t);
             }
-		}
+        }
 
-		if( lo < j ) quicksort( lo, j, f );
+        if( lo < j ) quicksort( lo, j, f );
         if( i < hi ) quicksort( i, hi, f );
 	}
 

@@ -59,7 +59,7 @@ class TestPackHx extends haxe.unit.TestCase {
         assertEquals(arr.toString(), iarr.toString());
     }
     public function testSort(){
-        var arr = [1,2,3];
+        var arr = [5,1,2,3];
         var iarr = IntArray.fromArray(arr, 6);
         var f = function(x:Int, y:Int){ return x > y ? -1 : 1;}
         arr.sort(f);
