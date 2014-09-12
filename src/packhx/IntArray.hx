@@ -192,6 +192,41 @@ abstract IntArray(Array<Int>) {
         return ret;
     }
 
+	/**
+		Sort the Array according to the comparison public function [f].
+		[f(x,y)] should return [0] if [x == y], [>0] if [x > y]
+		and [<0] if [x < y].
+	**/
+	public function sort( f : Int -> Int -> Int ) : Void
+	{
+		if (length == 0) return;
+		quicksort(0, length - 1, f);
+	}
+
+	/**
+		quicksort author: tong disktree
+		http://blog.disktree.net/2008/10/26/array-sort-performance.html
+	 */
+	private function quicksort( lo : Int, hi : Int, f : Int -> Int -> Int ) : Void
+	{
+		var i = lo, j = hi;
+        var p = arrayAccess((i + j) >> 1);
+		while ( i <= j )
+		{
+			while ( f(arrayAccess(i), p) < 0 ) i++;
+            while ( f(arrayAccess(j), p) > 0 ) j--;
+			if ( i <= j )
+			{
+                var t = arrayAccess(i);
+                arrayWrite(i++, arrayAccess(j));
+                arrayWrite(j--, t);
+            }
+		}
+
+		if( lo < j ) quicksort( lo, j, f );
+        if( i < hi ) quicksort( i, hi, f );
+	}
+
     public function iterator(){
         var index = 0;
         return {

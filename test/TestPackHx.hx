@@ -58,6 +58,14 @@ class TestPackHx extends haxe.unit.TestCase {
         var s = arr.shift();
         assertEquals(arr.toString(), iarr.toString());
     }
+    public function testSort(){
+        var arr = [1,2,3];
+        var iarr = IntArray.fromArray(arr, 6);
+        var f = function(x:Int, y:Int){ return x > y ? -1 : 1;}
+        arr.sort(f);
+        iarr.sort(f);
+        assertEquals(arr.toString(), iarr.toString());
+    }
 
     public function testReverse(){
         var arr = [1,2,3];
