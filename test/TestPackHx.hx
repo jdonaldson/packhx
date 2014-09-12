@@ -84,6 +84,13 @@ class TestPackHx extends haxe.unit.TestCase {
         assertEquals(iarr2.toString(), arr.toString());
     }
 
+    public function testJoin(){
+        var arr = [5,1,2,3];
+        var iarr = IntArray.fromArray(arr, 6);
+        assertEquals(arr.join('!'), iarr.join('!'));
+
+    }
+
     public function testReverse(){
         var arr = [1,2,3];
         var iarr = IntArray.fromArray(arr, 6);

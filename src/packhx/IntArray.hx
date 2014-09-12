@@ -27,7 +27,7 @@ abstract IntArray(Array<Int>) {
     }
 
     /**
-      This function returns the current bit size for elements in the array.  
+      This function returns the current bit size for elements in the array.
       This number is given in the constructor.
      **/
     public function get_bitSize() : Int {
@@ -73,14 +73,14 @@ abstract IntArray(Array<Int>) {
         var index = Std.int(start * SEGMENT) + 1;
         var start_offset = start % 32;
         if (this[index] == null) return 0;
-        var init_value = 
-        if (start_offset + size > 32){
-            var init_value = this[index].maskExtract( start_offset, size);
-            var overlap = start_offset + size - 32;
-            init_value | this[index+1].maskExtractSigned( 0, start_offset + size  - 32) << size -overlap;
-        } else {
-            this[index].maskExtractSigned( start_offset, size);
-        }
+        var init_value =
+            if (start_offset + size > 32){
+                var init_value = this[index].maskExtract( start_offset, size);
+                var overlap = start_offset + size - 32;
+                init_value | this[index+1].maskExtractSigned( 0, start_offset + size  - 32) << size -overlap;
+            } else {
+                this[index].maskExtractSigned( start_offset, size);
+            }
         return init_value & 1 == 1  ?  init_value >> 1 : null;
     }
 
@@ -112,12 +112,26 @@ abstract IntArray(Array<Int>) {
         } else if (start_offset >= finalOffset * bitSize && index == this.length-1) {
             // last index in raw array
             finalOffset =  Std.int(start_offset / bitSize) +1;
-        } 
+        }
         return value;
     }
 
     @:to public function toArray() {
        return [for (i in iterator()) i];
+    }
+
+    public function join(sep:String){
+        var buf = new StringBuf();
+        var first = true;
+        for (i in iterator()){
+            if (first){
+                first = false;
+            } else {
+                buf.add(sep);
+            }
+            buf.add(i);
+        }
+        return buf.toString();
     }
 
     public function filter(f : Int->Bool){
