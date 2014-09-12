@@ -102,7 +102,7 @@ abstract IntArray(Array<Int>) {
         var start_offset = start % 32;
         if (this[index] == null) this[index] = 0;
         this[index] = this[index].maskSet(start_offset, size, value);
-        if (start_offset + size >= 32){
+        if (start_offset + size > 32){
             if (this[index + 1] == null){
                 this[index + 1] = 0;
                 finalOffset = 0;
@@ -111,9 +111,9 @@ abstract IntArray(Array<Int>) {
             if (overlap > 0) {
                 this[index + 1] =this[index+1].maskSet( 0, overlap, value >>> size-overlap );
             }
-        } else if (start_offset >= finalOffset * bitSize) {
+        } else if (start_offset >= finalOffset * bitSize && index == this.length-1) {
             // last index in raw array
-            this[0] = this[0].maskSet( I32L, I32L, finalOffset + 1);
+            finalOffset =  Std.int(start_offset / bitSize) +1;
         } 
         return value;
     }
