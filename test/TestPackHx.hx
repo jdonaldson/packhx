@@ -40,7 +40,7 @@ class TestPackHx extends haxe.unit.TestCase {
         var iarr1 = IntArray.fromArray(arr, 6);
         var iarr2 = IntArray.fromArray(arr, 12);
         var iarr3 = iarr1.concat(iarr2);
-        assertTrue(iarr3.cellSize() == Std.int(Math.max(iarr1.cellSize(), iarr2.cellSize())));
+        assertTrue(iarr3.bitSize == Std.int(Math.max(iarr1.bitSize, iarr2.bitSize)));
     }
 
     public function testReset(){
