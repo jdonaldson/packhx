@@ -47,8 +47,6 @@ abstract IntArray(Array<Int>) {
         return val;
     }
 
-
-
     /**
       Calculates the length given the current cell size, and the final cell
       offset.
@@ -226,6 +224,16 @@ abstract IntArray(Array<Int>) {
         if( lo < j ) quicksort( lo, j, f );
         if( i < hi ) quicksort( i, hi, f );
 	}
+
+    public function copy(){
+        var ret = new IntArray(bitSize);
+        ret.setThis(this.copy());
+        return ret;
+    }
+
+    private inline function setThis(that:Array<Int>){
+        this = that;
+    }
 
     public function iterator(){
         var index = 0;

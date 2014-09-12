@@ -3,6 +3,7 @@ import packhx.PackedTools;
 
 class TestPackHx extends haxe.unit.TestCase {
     public function testGauntlet(){
+        // test signs, nulls, and a range of numbers
         for (sign in [-1, 1]){
             for (i in 1...#if neko 29 #else 31 #end){ // neko random can't seem to handle n > 29
                 var arr = new Array<Int>();
@@ -65,6 +66,22 @@ class TestPackHx extends haxe.unit.TestCase {
         arr.sort(f);
         iarr.sort(f);
         assertEquals(arr.toString(), iarr.toString());
+    }
+    public function testFilter(){
+        var arr = [5,1,2,3];
+        var iarr = IntArray.fromArray(arr, 6);
+        var f = function(x:Int){ return x == 2;}
+        assertEquals(  arr.filter(f).toString(),
+                      iarr.filter(f).toString());
+    }
+
+    public function testCopy(){
+        var arr = [5,1,2,3];
+        var iarr = IntArray.fromArray(arr, 6);
+        var iarr2 = iarr.copy();
+        iarr[0] = 1;
+        assertFalse(iarr[0] == iarr2[0]);
+        assertEquals(iarr2.toString(), arr.toString());
     }
 
     public function testReverse(){
