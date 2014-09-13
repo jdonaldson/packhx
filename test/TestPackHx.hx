@@ -39,7 +39,7 @@ class TestPackHx extends haxe.unit.TestCase {
 
     public function testConcat(){
         var arr = [1,2,3];
-        var iarr1 = IntArray.fromArray(arr, 6);
+        var iarr1 = IntArray.fromArray(arr, 7);
         var iarr2 = IntArray.fromArray(arr, 12);
         var iarr3 = iarr1.concat(iarr2);
         assertTrue(iarr3.bitSize == Std.int(Math.max(iarr1.bitSize, iarr2.bitSize)));

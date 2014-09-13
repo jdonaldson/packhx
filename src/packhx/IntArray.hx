@@ -12,7 +12,6 @@ using packhx.PackedTools;
   having an instance length field, it has an instance length method.
  **/
 abstract IntArray(Array<Int>) {
-    static inline var SEGMENT = 0.03125; // 1/32
     static inline var I32L = 5; // It takes 5 bits to express the number 32
 
     public var length(get, never) : Int;
@@ -69,35 +68,34 @@ abstract IntArray(Array<Int>) {
      **/
     @:arrayAccess public inline function arrayAccess(key : Int): Int {
         var size = bitSize;
-        var start = (key * size);
-        var index = Std.int(start * SEGMENT) + 1;
+        var start = (key * bitSize);
+        var index = (start >> I32L) + 1;
         var start_offset = start % 32;
+
         if (this[index] == null) return 0;
-        var init_value =
+        var value =
             if (start_offset + size > 32){
-                var init_value = this[index].maskExtract( start_offset, size);
+                var init_value = this[index].maskExtract(start_offset, size);
                 var overlap = start_offset + size - 32;
-                init_value | this[index+1].maskExtractSigned( 0, start_offset + size  - 32) << size -overlap;
+                init_value | this[index+1].maskExtractSigned( 0, overlap) << size - overlap;
             } else {
                 this[index].maskExtractSigned( start_offset, size);
             }
-        return init_value & 1 == 1  ?  init_value >> 1 : null;
+        return value & 1 == 1  ?  value >> 1 : null;
     }
+
+
 
     /**
       The array writer, which is the other critical method
      **/
     @:arrayAccess public inline function arrayWrite(key : Int, value : Int): Int {
-        if (value == null){
-            value = 0;
-        } else {
-            value <<= 1;
-            value |= 1;
-        }
-        var size = bitSize;
-        var start = (key * size);
-        var index = Std.int(start * SEGMENT) + 1;
+        value = value == null ? 0 : (value << 1 ) | 1; 
+        var size = bitSize;                           
+        var start = (key * size);                       
+        var index = (start >> I32L) + 1;                
         var start_offset = start % 32;
+
         if (this[index] == null) this[index] = 0;
         this[index] = this[index].maskSet(start_offset, size, value);
         if (start_offset + size > 32){
@@ -107,14 +105,16 @@ abstract IntArray(Array<Int>) {
             }
             var overlap = start_offset + size - 32;
             if (overlap > 0) {
-                this[index + 1] =this[index+1].maskSet( 0, overlap, value >>> size-overlap );
+                this[index + 1] = this[index+1].maskSet( 0, overlap, value >>> size-overlap );
             }
-        } else if (start_offset >= finalOffset * bitSize && index == this.length-1) {
+        } else if (start_offset >= finalOffset * size && index == this.length-1) {
             // last index in raw array
-            finalOffset =  Std.int(start_offset / bitSize) +1;
+            finalOffset =  Std.int(start_offset / size) +1;
         }
         return value;
     }
+
+
 
     @:to public function toArray() {
        return [for (i in iterator()) i];
@@ -243,7 +243,7 @@ abstract IntArray(Array<Int>) {
         return false;
     }
 
-    public function shift():Int{
+    public function shift(): Int {
         var ret = arrayAccess(0);
         for (i in 0...length-1){
             arrayWrite(i, arrayAccess(i+1));
@@ -277,31 +277,27 @@ abstract IntArray(Array<Int>) {
         return ret;
     }
 
-	/**
-		Sort the Array according to the comparison public function [f].
-		[f(x,y)] should return [0] if [x == y], [>0] if [x > y]
-		and [<0] if [x < y].
-	**/
-	public function sort( f : Int -> Int -> Int ) : Void
-	{
-		if (length < 2) return; // 1 or fewer items don't need to be sorted
-		quicksort(0, length - 1, f);
-	}
+    /**
+      Sort the Array according to the comparison public function [f].
+      [f(x,y)] should return [0] if [x == y], [>0] if [x > y]
+      and [<0] if [x < y].
+     **/
+    public function sort( f : Int -> Int -> Int ) : Void {
+        if (length < 2) return; // 1 or fewer items don't need to be sorted
+        quicksort(0, length - 1, f);
+    }
 
-	/**
-		quicksort author: tong disktree
-		http://blog.disktree.net/2008/10/26/array-sort-performance.html
-	 */
-	private function quicksort( lo : Int, hi : Int, f : Int -> Int -> Int ) : Void
-	{
+    /**
+      quicksort author: tong disktree
+      http://blog.disktree.net/2008/10/26/array-sort-performance.html
+     */
+    private function quicksort( lo : Int, hi : Int, f : Int -> Int -> Int ) : Void {
         var i = lo, j = hi;
         var p = arrayAccess((i + j) >> 1);
-        while ( i <= j )
-        {
+        while ( i <= j ) {
             while ( f(arrayAccess(i), p) < 0 && i < length-1) i++;
             while ( f(arrayAccess(j), p) > 0 && j > 1 ) j--;
-            if ( i <= j )
-            {
+            if ( i <= j ) {
                 var t = arrayAccess(i);
                 arrayWrite(i++, arrayAccess(j));
                 arrayWrite(j--, t);
@@ -310,7 +306,7 @@ abstract IntArray(Array<Int>) {
 
         if( lo < j ) quicksort( lo, j, f );
         if( i < hi ) quicksort( i, hi, f );
-	}
+    }
 
     public function copy(){
         var ret = new IntArray(bitSize);
