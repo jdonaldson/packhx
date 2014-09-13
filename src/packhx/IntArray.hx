@@ -120,6 +120,34 @@ abstract IntArray(Array<Int>) {
        return [for (i in iterator()) i];
     }
 
+    public function indexOf(x:Int, ?fromIndex:Int):Int {
+        if (fromIndex == null) fromIndex = 0;
+        else if (fromIndex < 0) fromIndex += length;
+
+        for (i in fromIndex...length){
+            if (arrayAccess(i) == x) return i;
+        }
+        return -1;
+    }
+
+    public function insert(pos:Int, x:Int) : Void{
+        var end = length-1;
+        while(end >= pos){
+            arrayWrite(end+1, arrayAccess(end));
+            end--;
+        }
+        arrayWrite(pos, x);
+    }
+    public function lastIndexOf(x:Int, ?fromIndex:Int):Int{
+        if (fromIndex == null) fromIndex = 0;
+        else if (fromIndex < 0) fromIndex += length;
+        var last =-1;
+        for (i in fromIndex...length){
+            if (arrayAccess(i) == x) last = i;
+        }
+        return last;
+    }
+
     public function join(sep:String){
         var buf = new StringBuf();
         var first = true;

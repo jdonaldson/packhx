@@ -98,4 +98,17 @@ class TestPackHx extends haxe.unit.TestCase {
         iarr.reverse();
         assertEquals(arr.toString(), iarr.toString());
     }
+    public function testIndexOf(){
+        var arr = [1,2,3,2];
+        var iarr = IntArray.fromArray(arr, 6);
+        assertEquals(iarr.indexOf(2), 1);
+        assertEquals(iarr.indexOf(2,2), 3);
+    }
+    public function testInsert(){
+        var arr = [1,2,3,4];
+        var iarr = IntArray.fromArray(arr, 6);
+        iarr.insert(1,2);
+        arr.insert(1,2);
+        assertEquals(arr.toString(), iarr.toString());
+    }
 }
