@@ -122,7 +122,7 @@ abstract IntArray(Array<Int>) {
 
     public function indexOf(x:Int, ?fromIndex:Int):Int {
         if (fromIndex == null) fromIndex = 0;
-        else if (fromIndex < 0) fromIndex += length;
+        else while (fromIndex < 0) fromIndex += length;
 
         for (i in fromIndex...length){
             if (arrayAccess(i) == x) return i;
@@ -140,7 +140,7 @@ abstract IntArray(Array<Int>) {
     }
     public function lastIndexOf(x:Int, ?fromIndex:Int):Int{
         if (fromIndex == null) fromIndex = 0;
-        else if (fromIndex < 0) fromIndex += length;
+        else while (fromIndex < 0) fromIndex += length;
         var last =-1;
         for (i in fromIndex...length){
             if (arrayAccess(i) == x) last = i;
@@ -196,6 +196,18 @@ abstract IntArray(Array<Int>) {
           finalOffset = bitSize -1;
        }
        return ret;
+    }
+    public function remove(x:Int) : Bool {
+        for (i in 0...length){
+            if (arrayAccess(i) == x){
+                for (j in i+1...length){
+                    arrayWrite(j-1, arrayAccess(j));
+                }
+                pop();
+                return true;
+            }
+        }
+        return false;
     }
 
     public function shift():Int{

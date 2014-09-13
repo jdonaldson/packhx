@@ -104,6 +104,14 @@ class TestPackHx extends haxe.unit.TestCase {
         assertEquals(iarr.indexOf(2), 1);
         assertEquals(iarr.indexOf(2,2), 3);
     }
+    public function testRemove(){
+        var arr = [1,2,3,2,4];
+        var iarr = IntArray.fromArray(arr, 6);
+        arr.remove(4);
+        iarr.remove(4);
+        assertEquals(arr.toString(), iarr.toString());
+
+    }
     public function testInsert(){
         var arr = [1,2,3,4];
         var iarr = IntArray.fromArray(arr, 6);
