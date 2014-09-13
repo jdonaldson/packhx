@@ -120,6 +120,13 @@ abstract IntArray(Array<Int>) {
        return [for (i in iterator()) i];
     }
 
+    public function map(f : Int->Int): IntArray{
+        var ret = new IntArray(bitSize);
+        for (i in iterator()) ret.push(f(i));
+        return ret;
+    }
+
+    // TODO: more tests
     public function indexOf(x:Int, ?fromIndex:Int):Int {
         if (fromIndex == null) fromIndex = 0;
         else while (fromIndex < 0) fromIndex += length;
@@ -130,6 +137,30 @@ abstract IntArray(Array<Int>) {
         return -1;
     }
 
+    // TODO: more tests
+    public function slice(pos:Int, ?end:Int):IntArray{
+        var ret = new IntArray(bitSize);
+        for (i in pos...length){
+            ret.push(arrayAccess(i));
+        }
+        return ret;
+    }
+
+    // TODO: more tests
+    public function splice(pos : Int, len : Int): IntArray {
+        var ret = new IntArray(bitSize);
+        for (i in pos...length){
+            if (i < len){
+                ret.push(arrayAccess(i)); 
+            } else {
+                arrayWrite(i-len, arrayAccess(i));
+            }
+        }
+        for (i in 0...len) pop();
+        return ret;
+    }
+
+    // TODO: more tests
     public function insert(pos:Int, x:Int) : Void{
         var end = length-1;
         while(end >= pos){
@@ -138,6 +169,8 @@ abstract IntArray(Array<Int>) {
         }
         arrayWrite(pos, x);
     }
+
+    // TODO: more tests
     public function lastIndexOf(x:Int, ?fromIndex:Int):Int{
         if (fromIndex == null) fromIndex = 0;
         else while (fromIndex < 0) fromIndex += length;
@@ -300,6 +333,17 @@ abstract IntArray(Array<Int>) {
             }
         }
     }
+
+    // TODO: more test
+    public function unshift(x:Int){
+        var ret = x;
+        for (i in 1...length){
+           arrayWrite(i-1, arrayAccess(i)); 
+        }
+        pop();
+        return ret;
+    }
+
     /**
       Return a copy of the raw underlying array.
      **/
