@@ -151,7 +151,7 @@ abstract IntArray(Array<Int>) {
         var ret = new IntArray(bitSize);
         for (i in pos...length){
             if (i < len){
-                ret.push(arrayAccess(i)); 
+                ret.push(arrayAccess(i));
             } else {
                 arrayWrite(i-len, arrayAccess(i));
             }
@@ -338,7 +338,7 @@ abstract IntArray(Array<Int>) {
     public function unshift(x:Int){
         var ret = x;
         for (i in 1...length){
-           arrayWrite(i-1, arrayAccess(i)); 
+           arrayWrite(i-1, arrayAccess(i));
         }
         pop();
         return ret;

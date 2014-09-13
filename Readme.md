@@ -10,37 +10,62 @@ not need to use the entire maximum integer value range ( around 4 billion).
 
 By specifying a new max size, Packhx can use a given Int32 array cell for more
 than one value. In the example below, we are storing the 9 bit packed values i{0-9} in
-the 32 bit array cell values b{0-2}.  Note that values can overlap.
+the 32 bit array cell values b{0-2}.  Note that values can overlap, and that 
+the first cell is used to contain Packhx-specific metadata.
 
 <table class="monospace">
   <tr>
     <td colspan="32">b0</td>
     <td colspan="32">b1</td>
     <td colspan="32">b2</td>
+    <td colspan="32">b3</td>
     <td style="border-style: dashed; border-right: none;">...</td>
   </tr>
   <tr>
-    <td colspan="9">i0</td>
-    <td colspan="9">i1</td>
-    <td colspan="9">i2</td>
-    <td colspan="9">i3</td>
-    <td colspan="9">i4</td>
-    <td colspan="9">i5</td>
-    <td colspan="9">i6</td>
-    <td colspan="9">i7</td>
-    <td colspan="9">i8</td>
-    <td colspan="9">i9</td>
+    <td colspan="32" width=160px>(metadata)</td>
+    <td colspan="9" width=45px>i0</td>
+    <td colspan="9" width=45px>i1</td>
+    <td colspan="9" width=45px>i2</td>
+    <td colspan="9" width=45px>i3</td>
+    <td colspan="9" width=45px>i4</td>
+    <td colspan="9" width=45px>i5</td>
+    <td colspan="9" width=45px>i6</td>
+    <td colspan="9" width=45px>i7</td>
+    <td colspan="9" width=45px>i8</td>
     <td style="border-style: dashed; border-right: none;">...</td>
+  </tr>
+</table>
+
+Packhx stores positive or negative integers.  The sign bit is always the highest
+bit of the integer, just as it is for 32 and 64 bit integers.  However, Packhx
+also uses the lowest bit to store the null status of the value.  For instance,
+the table below shows how Packhx stores the value -2 with a bit size of 5.
+(S = signed bit position, B = normal bit position, N = null bit position).
+
+<table class="monospace">
+  <tr>
+    <td>S</td>
+    <td>B</td>
+    <td>B</td>
+    <td>B</td>
+    <td>N</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
   </tr>
 </table>
 
 
 
-
-To create packed IntArray, you must specify the maximum bit size you want:
+To create packed IntArray, you must specify the maximum bit size you want.
+Keep in mind that you must include the bits for the sign and null status.
 
 ```haxe
-var parr = new packhx.IntArray(9);
+var parr = new packhx.IntArray(5);
 ```
 
 You can iterate over it normally : 
@@ -75,9 +100,7 @@ The packed array value is often much smaller than the equivalent native array:
 
 The total array size savings will be roughly equivalent to the ratio of your bit
 size argument to 32 bits, minus a small amount of space used for packhx
-internals (packhx reserves the first cell of the array to store bit size and a
-count of how many packed integers are in the last cell.
-
+internals.
 
 You can use a packed int array whenever you need a normal int array.  The Haxe
 abstract will convert it for you (note that this will make a copy an incur some
@@ -89,17 +112,11 @@ overhead.  Consider using the IntArray iterator method instead.)
    }
    f(parr); // call an array argument function with an IntArray
 ```
-# Caveats
 
-The IntArray type allows for aribtrary array access.  However, unlike normal
-array access an unset cell will return 0 instead of null.
+# Caveats
 
 Packhx supports Haxe 3.1.3 and up.
 
-
-# Future work
-1. <strike>Negative integers</strike>
-2. Full array interface support
 
 # Acknowledgements
 
