@@ -98,9 +98,11 @@ class TestPackHx extends haxe.unit.TestCase {
         iarr.reverse();
         assertEquals(arr.toString(), iarr.toString());
     }
+
     public function testIndexOf(){
         var arr = [1,2,3,2];
         var iarr = IntArray.fromArray(arr, 6);
+
         // test found
         assertEquals(iarr.indexOf(2), 1);
         assertEquals(arr.indexOf(2), 1);
@@ -122,6 +124,29 @@ class TestPackHx extends haxe.unit.TestCase {
         assertEquals(arr.indexOf(2,5), -1);
     }
 
+    public function lastIndexOf(){
+        var arr = [1,2,3,2];
+        var iarr = IntArray.fromArray(arr, 6);
+        // test found
+        assertEquals(iarr.lastIndexOf(2), 3);
+        assertEquals(arr.lastIndexOf(2), 3);
+
+        // test found at offset
+        assertEquals(iarr.lastIndexOf(2,2), 1);
+        assertEquals(arr.lastIndexOf(2,2), 1);
+
+        // test not found
+        assertEquals(iarr.lastIndexOf(9), -1);
+        assertEquals(arr.lastIndexOf(9), -1);
+
+        // test negative fromIndex
+        assertEquals(iarr.lastIndexOf(2,-2), 3);
+        assertEquals(arr.lastIndexOf(2,-2), 3);
+
+        // test index greater than length
+        assertEquals(iarr.lastIndexOf(2,5), -1);
+        assertEquals(arr.lastIndexOf(2,5), -1);
+    }
 
     public function testRemove(){
         var arr = [1,2,3,2,4];
@@ -131,11 +156,32 @@ class TestPackHx extends haxe.unit.TestCase {
         assertEquals(arr.toString(), iarr.toString());
 
     }
+
+
     public function testInsert(){
         var arr = [1,2,3,4];
         var iarr = IntArray.fromArray(arr, 6);
+
+        // test negative pos < -length
+        iarr.insert(-20, 5);
+        arr.insert(-20, 5);
+        assertEquals(arr.toString(), iarr.toString());
+
+        // test basic insert
         iarr.insert(1,2);
         arr.insert(1,2);
         assertEquals(arr.toString(), iarr.toString());
+
+        // test pos > length
+        iarr.insert(1,iarr.length + 1);
+        arr.insert(1,arr.length + 1);
+        assertEquals(arr.toString(), iarr.toString());
+
+        // test negative pos
+        iarr.insert(-1, 5);
+        arr.insert(-1, 5);
+        assertEquals(arr.toString(), iarr.toString());
+
+
     }
 }
