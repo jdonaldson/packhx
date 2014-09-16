@@ -159,8 +159,11 @@ abstract IntArray(Array<Int>) {
         return ret;
     }
 
-    // TODO: more tests
     public function insert(pos:Int, x:Int) : Void{
+        if (pos < 0){ 
+            pos = length + pos; 
+            if (pos < 0) pos = 0;
+        }
         var end = length-1;
         while(end >= pos){
             arrayWrite(end+1, arrayAccess(end));
@@ -169,7 +172,6 @@ abstract IntArray(Array<Int>) {
         arrayWrite(pos, x);
     }
 
-    // TODO: more tests
     public function lastIndexOf(x:Int, ?fromIndex:Int):Int{
         if (fromIndex == null) fromIndex = 0;
         else while (fromIndex < 0) fromIndex += length;
