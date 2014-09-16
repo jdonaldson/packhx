@@ -101,9 +101,28 @@ class TestPackHx extends haxe.unit.TestCase {
     public function testIndexOf(){
         var arr = [1,2,3,2];
         var iarr = IntArray.fromArray(arr, 6);
+        // test found
         assertEquals(iarr.indexOf(2), 1);
+        assertEquals(arr.indexOf(2), 1);
+
+        // test found at offset
         assertEquals(iarr.indexOf(2,2), 3);
+        assertEquals(arr.indexOf(2,2), 3);
+
+        // test not found
+        assertEquals(iarr.indexOf(9), -1);
+        assertEquals(arr.indexOf(9), -1);
+
+        // test negative fromIndex
+        assertEquals(iarr.indexOf(2,-2), 3);
+        assertEquals(arr.indexOf(2,-2), 3);
+
+        // test index greater than length
+        assertEquals(iarr.indexOf(2,5), -1);
+        assertEquals(arr.indexOf(2,5), -1);
     }
+
+
     public function testRemove(){
         var arr = [1,2,3,2,4];
         var iarr = IntArray.fromArray(arr, 6);
