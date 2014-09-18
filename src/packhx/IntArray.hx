@@ -90,10 +90,10 @@ abstract IntArray(Array<Int>) {
       The array writer, which is the other critical method
      **/
     @:arrayAccess public inline function arrayWrite(key : Int, value : Int): Int {
-        value = value == null ? 0 : (value << 1 ) | 1; 
-        var size = bitSize;                           
-        var start = (key * size);                       
-        var index = (start >> I32L) + 1;                
+        value = value == null ? 0 : (value << 1 ) | 1;
+        var size = bitSize;
+        var start = (key * size);
+        var index = (start >> I32L) + 1;
         var start_offset = start % 32;
 
         if (this[index] == null) {
@@ -140,32 +140,49 @@ abstract IntArray(Array<Int>) {
         return -1;
     }
 
-    // TODO: more tests
     public function slice(pos:Int, ?end:Int):IntArray{
         var ret = new IntArray(bitSize);
-        for (i in pos...length){
+
+        if (end == null) end = length;
+        else if (end < 0) end += length;
+        if (end < 0) end = 0;
+
+        if (pos < 0) pos += length;
+        if (pos < 0) pos = 0;
+
+        for (i in pos...end){
             ret.push(arrayAccess(i));
         }
         return ret;
     }
 
-    // TODO: more tests
     public function splice(pos : Int, len : Int): IntArray {
         var ret = new IntArray(bitSize);
+
+        if (len < 0) return ret;
+
+        if (pos < 0) pos += length;
+        if (pos < 0) pos = 0;
+        if (pos > length-1) return ret;
+
+        if (pos + len > length) len = length - pos;
+
         for (i in pos...length){
-            if (i < len){
+            if (i < pos + len ){
                 ret.push(arrayAccess(i));
             } else {
                 arrayWrite(i-len, arrayAccess(i));
             }
         }
+
         for (i in 0...len) pop();
+
         return ret;
-    }
+	}
 
     public function insert(pos:Int, x:Int) : Void{
-        if (pos < 0){ 
-            pos = length + pos; 
+        if (pos < 0){
+            pos = length + pos;
             if (pos < 0) pos = 0;
         }
         var end = length-1;
@@ -225,16 +242,21 @@ abstract IntArray(Array<Int>) {
     }
 
     public function pop():Int{
+       if (length == 0){
+           return null;
+       }
        var ret = arrayAccess(length-1);
+
        if (finalOffset > 0){
            finalOffset-=1;
        } else {
-          if (this.length > 1) this.pop();
-          else return null;
-          finalOffset = bitSize -1;
+           if (this.length <= 1) return null;
+           this.pop();
+           finalOffset = Std.int(32 / (bitSize -1)) -1;
        }
        return ret;
     }
+
     public function remove(x:Int) : Bool {
         for (i in 0...length){
             if (arrayAccess(i) == x){
@@ -278,7 +300,9 @@ abstract IntArray(Array<Int>) {
 
     public static function fromArray(arr:Array<Int>, bitSize:Int) : IntArray{
         var ret = new IntArray(bitSize);
-        for (a in arr) ret.push(a);
+        for (a in arr) {
+            ret.push(a);
+        }
         return ret;
     }
 

@@ -27,6 +27,7 @@ class TestPackHx extends haxe.unit.TestCase {
         assertEquals(arr.toString(), iarr.toString());
         assertEquals(ip, p);
     }
+
     public function testIterator(){
         var arr = [1,2,3];
         var iarr = IntArray.fromArray(arr, 6);
@@ -44,6 +45,28 @@ class TestPackHx extends haxe.unit.TestCase {
         var iarr3 = iarr1.concat(iarr2);
         assertTrue(iarr3.bitSize == Std.int(Math.max(iarr1.bitSize, iarr2.bitSize)));
     }
+
+    public function testSlice(){
+        var arr = [1,2,3,4,5];
+        var iarr = IntArray.fromArray(arr, 7);
+
+        // test end omitted
+        assertEquals(arr.slice(1).toString(), iarr.slice(1).toString());
+
+        // test end specified
+        assertEquals(arr.slice(1,3).toString(), iarr.slice(1,3).toString());
+
+        // test negative pos, end
+        assertEquals(arr.slice(-1,-4).toString(), iarr.slice(-1,-4).toString());
+
+        //test pos > length
+        assertEquals(arr.slice(9).toString(), iarr.slice(9).toString());
+
+        // test end == pos
+        assertEquals(arr.slice(2,2).toString(), iarr.slice(2,2).toString());
+
+    }
+
 
     public function testReset(){
         var arr = [1,2,3];
@@ -182,6 +205,28 @@ class TestPackHx extends haxe.unit.TestCase {
         arr.insert(-1, 5);
         assertEquals(arr.toString(), iarr.toString());
 
+    }
+
+    public function testSplice(){
+        var arr = [1,2,3,4,5,6,7];
+        var iarr = IntArray.fromArray(arr, 8);
+
+        // test end specified
+        assertEquals(arr.splice(1,3).toString(), iarr.splice(1,3).toString());
+        assertEquals(arr.toString(), iarr.toString());
+
+        // // test negative pos, end
+        assertEquals(arr.splice(-1,-4).toString(), iarr.splice(-1,-4).toString());
+        assertEquals(arr.toString(), iarr.toString());
+
+
+        // // test pos > length
+        assertEquals(arr.splice(99,4).toString(), iarr.splice(99,4).toString());
+        assertEquals(arr.toString(), iarr.toString());
+
+        // // test pos == length
+        assertEquals(arr.splice(1,2).toString(), iarr.splice(1,2).toString());
+        assertEquals(arr.toString(), iarr.toString());
 
     }
 }
