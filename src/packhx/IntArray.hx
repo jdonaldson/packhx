@@ -96,8 +96,12 @@ abstract IntArray(Array<Int>) {
         var index = (start >> I32L) + 1;                
         var start_offset = start % 32;
 
-        if (this[index] == null) this[index] = 0;
+        if (this[index] == null) {
+            this[index] = 0;
+            finalOffset = 0;
+        }
         this[index] = this[index].maskSet(start_offset, size, value);
+
         if (start_offset + size > 32){
             if (this[index + 1] == null){
                 this[index + 1] = 0;
