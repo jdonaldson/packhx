@@ -45,7 +45,7 @@ class PackedTools {
       [length], and return the result.
      **/
     public static inline function maskClear( getvalue : Int, offset : Int, length : Int){
-        return getvalue & ((~0 << length + offset) | ~(~0 << offset));
+        return getvalue & ( (-1 << offset + length) | (1 << offset) - 1 );
     }
     /**
       This routine will extract [value] at [offset] with [length] into a signed
