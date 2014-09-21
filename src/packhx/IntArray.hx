@@ -4,25 +4,26 @@ using packhx.PackedTools;
 /**
   IntArray is a compressed array type that allows the efficient construction of
   an array containing Integer numbers smaller than the conventional 32 bit limit.
-  For instance, if a developer only needed to use 8 bits to store the nubmers
-  in a given case, IntArray could fit around 4 numbers per 32 bit array location.
 
   IntArray provides normal array access via overloaded @:arrayAccess methods,
-  so, it can behave more or less like a normal array.  However, rather than
-  having an instance length field, it has an instance length method.
+  so, it can behave more or less like a normal array.
  **/
 abstract IntArray(Array<Int>) {
     static inline var I32L = 5; // It takes 5 bits to express the number 32
+    static inline var NULLABLE_BIT = 1 << I32L * 2;
 
     public var length(get, never) : Int;
     public var bitSize(get, never) : Int;
     private var finalOffset(get, set) : Int;
+    public var nullable(get, never) : Bool;
 
     /**
       Constructs a new packed IntArray with the given cell size
      **/
-    public function new(bitSize:Int){
+    public function new(bitSize:Int, ?nullable = true){
         this = [bitSize];
+
+        if (nullable) this[0] |= NULLABLE_BIT;
     }
 
     /**
@@ -31,6 +32,9 @@ abstract IntArray(Array<Int>) {
      **/
     public function get_bitSize() : Int {
         return this[0] & 31;
+    }
+    private function get_nullable() : Bool {
+        return this[0] & NULLABLE_BIT > 0;
     }
 
     /**
@@ -42,6 +46,7 @@ abstract IntArray(Array<Int>) {
     }
 
     private function set_finalOffset(val : Int) : Int {
+
         this[0] = this[0].maskSet( I32L, I32L, val);
         return val;
     }
@@ -81,7 +86,7 @@ abstract IntArray(Array<Int>) {
             } else {
                 this[index].maskExtractSigned( start_offset, size);
             }
-        return value & 1 == 1  ?  value >> 1 : null;
+        return nullable ? {value & 1 == 1  ?  value >> 1 : null;} : value;
     }
 
 
@@ -90,7 +95,12 @@ abstract IntArray(Array<Int>) {
       The array writer, which is the other critical method
      **/
     @:arrayAccess public inline function arrayWrite(key : Int, value : Int): Int {
-        value = value == null ? 0 : (value << 1 ) | 1;
+        if (nullable){
+            value = value == null ? 0 : (value << 1 ) | 1;
+        } else {
+            if (value == null) value = 0;
+        }
+
         var size = bitSize;
         var start = (key * size);
         var index = (start >> I32L) + 1;
@@ -100,6 +110,7 @@ abstract IntArray(Array<Int>) {
             this[index] = 0;
             finalOffset = 0;
         }
+
         this[index] = this[index].maskSet(start_offset, size, value);
 
         if (start_offset + size > 32){
@@ -125,7 +136,7 @@ abstract IntArray(Array<Int>) {
     }
 
     public function map(f : Int->Int): IntArray{
-        var ret = new IntArray(bitSize);
+        var ret = new IntArray(bitSize, nullable);
         for (i in iterator()) ret.push(f(i));
         return ret;
     }
@@ -141,7 +152,7 @@ abstract IntArray(Array<Int>) {
     }
 
     public function slice(pos:Int, ?end:Int):IntArray{
-        var ret = new IntArray(bitSize);
+        var ret = new IntArray(bitSize, nullable);
 
         if (end == null) end = length;
         else if (end < 0) end += length;
@@ -157,7 +168,7 @@ abstract IntArray(Array<Int>) {
     }
 
     public function splice(pos : Int, len : Int): IntArray {
-        var ret = new IntArray(bitSize);
+        var ret = new IntArray(bitSize, nullable);
 
         if (len < 0) return ret;
 
@@ -218,7 +229,7 @@ abstract IntArray(Array<Int>) {
     }
 
     public function filter(f : Int->Bool){
-        var ret = new IntArray(bitSize);
+        var ret = new IntArray(bitSize, nullable);
         for (i in iterator()) if (f(i)) ret.push(i) ;
         return ret;
     }
@@ -298,8 +309,8 @@ abstract IntArray(Array<Int>) {
        return '[${[for (i in iterator()) i].join(',')}]';
     }
 
-    public static function fromArray(arr:Array<Int>, bitSize:Int) : IntArray{
-        var ret = new IntArray(bitSize);
+    public static function fromArray(arr:Array<Int>, bitSize:Int, ?nullable : Bool) : IntArray{
+        var ret = new IntArray(bitSize, nullable);
         for (a in arr) {
             ret.push(a);
         }
@@ -338,7 +349,7 @@ abstract IntArray(Array<Int>) {
     }
 
     public function copy(){
-        var ret = new IntArray(bitSize);
+        var ret = new IntArray(bitSize, nullable);
         ret.setThis(this.copy());
         return ret;
     }

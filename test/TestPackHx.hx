@@ -206,6 +206,15 @@ class TestPackHx extends haxe.unit.TestCase {
         assertEquals(arr.toString(), iarr.toString());
 
     }
+    public function testNullable(){
+        var arr = [1,2,3,4,5,6,7];
+        var iarr = IntArray.fromArray(arr, 8);
+
+        iarr[0] = null;
+        arr[0] = null;
+
+        assertEquals(arr.toString(), iarr.toString());
+    }
 
     public function testSplice(){
         var arr = [1,2,3,4,5,6,7];
