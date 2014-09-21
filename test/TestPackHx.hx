@@ -82,6 +82,15 @@ class TestPackHx extends haxe.unit.TestCase {
         var s = arr.shift();
         assertEquals(arr.toString(), iarr.toString());
     }
+
+    public function testUnshift(){
+        var arr = [1,2,3];
+        var iarr = IntArray.fromArray(arr, 6);
+        arr.unshift(9);
+        iarr.unshift(9);
+        assertEquals(arr.toString(), iarr.toString());
+    }
+
     public function testSort(){
         var arr = [5,1,2,3];
         var iarr = IntArray.fromArray(arr, 6);
@@ -170,6 +179,7 @@ class TestPackHx extends haxe.unit.TestCase {
         assertEquals(iarr.lastIndexOf(2,5), -1);
         assertEquals(arr.lastIndexOf(2,5), -1);
     }
+
 
     public function testRemove(){
         var arr = [1,2,3,2,4];

@@ -370,13 +370,14 @@ abstract IntArray(Array<Int>) {
         }
     }
 
-    // TODO: more test
     public function unshift(x:Int){
         var ret = x;
-        for (i in 1...length){
-           arrayWrite(i-1, arrayAccess(i));
+        var tmplength = length;
+        for (i in 0...tmplength){
+            var j = tmplength-i-1;
+            arrayWrite(j+1, arrayAccess(j));
         }
-        pop();
+        arrayWrite(0, x);
         return ret;
     }
 
