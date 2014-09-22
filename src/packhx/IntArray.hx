@@ -252,7 +252,7 @@ abstract IntArray(Array<Int>) {
        arrayWrite(length,val);
     }
 
-    public function pop():Int{
+    public function pop():Null<Int>{
        if (length == 0){
            return null;
        }
@@ -281,7 +281,7 @@ abstract IntArray(Array<Int>) {
         return false;
     }
 
-    public function shift(): Int {
+    public function shift(): Null<Int> {
         var ret = arrayAccess(0);
         for (i in 0...length-1){
             arrayWrite(i, arrayAccess(i+1));
