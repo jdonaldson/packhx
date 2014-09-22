@@ -1,5 +1,6 @@
 import packhx.IntArray;
-import packhx.PackedTools;
+using packhx.PackedTools;
+
 
 class TestPackHx extends haxe.unit.TestCase {
     public function testGauntlet(){
@@ -216,6 +217,15 @@ class TestPackHx extends haxe.unit.TestCase {
         assertEquals(arr.toString(), iarr.toString());
 
     }
+
+    public function testNonNull(){
+        var iarr = new IntArray(1,false);
+        iarr[0] = 1;
+        iarr[1] = null;
+        assertTrue(iarr[0] == -1);
+        assertTrue(iarr[1] == 0);
+    }
+
     public function testNullable(){
         var arr = [1,2,3,4,5,6,7];
         var iarr = IntArray.fromArray(arr, 8);
