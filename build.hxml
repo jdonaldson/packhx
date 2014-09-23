@@ -1,4 +1,1 @@
--cp src
--cp test
--main Test
--x out
+hxml/build.neko.hxml

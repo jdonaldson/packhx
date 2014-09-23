@@ -1,0 +1,3 @@
+hxml/base.hxml
+-cpp outcpp
+-cmd ./outcpp/Test

@@ -1,0 +1,3 @@
+hxml/base.hxml
+-js out.js 
+-cmd node out.js

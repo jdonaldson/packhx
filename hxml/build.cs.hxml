@@ -1,0 +1,3 @@
+hxml/base.hxml
+-cs outcs
+-cmd mono outcs/bin/Test.exe

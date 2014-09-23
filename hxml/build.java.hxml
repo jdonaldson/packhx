@@ -1,0 +1,3 @@
+hxml/base.hxml
+-java outjava
+-cmd java -jar outjava/Test.jar
