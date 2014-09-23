@@ -7,9 +7,6 @@ language: php
 
 env:
     matrix:
-    # - TARGET=cpp
-    # - TARGET=cs
-    # - TARGET=java
     - TARGET=neko
     - TARGET=node
     - TARGET=php
