@@ -1,3 +1,3 @@
 hxml/base.hxml
--js out.js 
--cmd node out.js
+-js ./bin/out.js 
+-cmd node ./bin/out.js
