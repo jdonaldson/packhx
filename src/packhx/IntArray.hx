@@ -306,7 +306,11 @@ abstract IntArray(Array<Int>) {
 
 
     public function toString(){
+#if js
+       return '${[for (i in iterator()) i].join(',')}';
+#else
        return '[${[for (i in iterator()) i].join(',')}]';
+#end
     }
 
     public static function fromArray(arr:Array<Int>, bitSize:Int, ?nullable : Bool) : IntArray{

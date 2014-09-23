@@ -6,7 +6,7 @@ class TestPackHx extends haxe.unit.TestCase {
     public function testGauntlet(){
         // test signs, nulls, and a range of numbers
         for (sign in [-1, 1]){
-            for (i in 1...#if neko 29 #else 31 #end){ // neko random can't seem to handle n > 29
+            for (i in 1...#if neko 29 #else 30 #end){ // neko random can't seem to handle n > 29
                 var arr = new Array<Int>();
                 var iarr = new IntArray(i+2);
                 for (j in 0...32){
