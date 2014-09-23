@@ -1,0 +1,5 @@
+
+hxml/base.hxml
+-php ./bin/outphp
+-cmd php ./bin/outphp/index.php
+
