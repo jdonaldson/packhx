@@ -1,0 +1,13 @@
+{
+  "name": "packhx",
+  "url": "https://github.com/jdonaldson/packhx",
+  "license": "MIT",
+  "classPath": "src",
+  "tags": ["bit", "pack", "array"],
+  "description": "Packhx is a bit packed array abstract implementation for Haxe.",
+  "releasenote": "Initial release",
+  "version": "0.1.0",
+  "contributors": ["jdonaldson"]
+}
+
+
