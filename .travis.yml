@@ -11,6 +11,8 @@ env:
     - TARGET=node
     - TARGET=php
     - TARGET=cpp
+    - TARGET=java
+    - TARGET=cs
  
 matrix:
   fast_finish: true
