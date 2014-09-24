@@ -152,7 +152,8 @@ abstract IntArray(Array<Int>) {
     }
 
     public function indexOf(x:Int, ?fromIndex:Int):Int {
-        if (fromIndex == null) fromIndex = 0;
+        if (fromIndex > length) return -1;
+        else if (fromIndex == null) fromIndex = 0;
         else while (fromIndex < 0) fromIndex += length;
 
         for (i in fromIndex...length){
