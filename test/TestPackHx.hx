@@ -12,7 +12,9 @@ class TestPackHx extends haxe.unit.TestCase {
                 for (j in 0...32){
                     var rnd = Std.int(Math.pow(2,i));
                     arr[j] =sign * Std.random(rnd);
+#if (js || neko || php)
                     if (Math.random() > .5) arr[j] = null;
+#end
                     iarr[j] = arr[j];
                 }
                 assertEquals(arr.toString(), iarr.toString());
@@ -218,6 +220,7 @@ class TestPackHx extends haxe.unit.TestCase {
 
     }
 
+#if (js || php || neko)
     public function testNonNull(){
         var iarr = new IntArray(1,false);
         iarr[0] = 1;
@@ -225,7 +228,9 @@ class TestPackHx extends haxe.unit.TestCase {
         assertTrue(iarr[0] == -1);
         assertTrue(iarr[1] == 0);
     }
+#end
 
+#if (js || php || neko)
     public function testNullable(){
         var arr = [1,2,3,4,5,6,7];
         var iarr = IntArray.fromArray(arr, 8);
@@ -235,6 +240,7 @@ class TestPackHx extends haxe.unit.TestCase {
 
         assertEquals(arr.toString(), iarr.toString());
     }
+#end
 
     public function testSplice(){
         var arr = [1,2,3,4,5,6,7];
