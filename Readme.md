@@ -120,14 +120,14 @@ Packhx supports Haxe 3.1.3 and up.
 
 # Acknowledgements
 
-* I used some markdown table and examples from [Gregory Paskoz's PackedArray library][gpaskoz].
+* I used some markdown table and examples from [Gregory Pakosz's PackedArray library][gpakosz].
 * I learned about some basic performance characteristics from [Daniel Lemire's
 recent blog post on the
 subject][lemire].
 
 
 
-[gpaskoz]: https://github.com/gpakosz/PackedArray
+[gpakosz]: https://github.com/gpakosz/PackedArray
 [lemire]: http://lemire.me/blog/archives/2012/03/06/how-fast-is-bit-packing/
 [travis-ci]: https://travis-ci.org/jdonaldson/packhx.svg?branch=master
 [travis-ci 2]: https://travis-ci.org/jdonaldson/packhx
